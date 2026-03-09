@@ -28,7 +28,25 @@ const getId = () => {
       .finally(() => {
         setLoading(false);
       });
-  }, [id]);
+  }, []);
+
+  const Ingredientes = [
+    cocktail?.strIngredient1,
+    cocktail?.strIngredient2,
+    cocktail?.strIngredient3,
+    cocktail?.strIngredient4,
+    cocktail?.strIngredient5,
+    cocktail?.strIngredient6,
+    cocktail?.strIngredient7,
+    cocktail?.strIngredient8,
+    cocktail?.strIngredient9,
+    cocktail?.strIngredient10,
+    cocktail?.strIngredient11,
+    cocktail?.strIngredient12,
+    cocktail?.strIngredient13,
+    cocktail?.strIngredient14,
+    cocktail?.strIngredient15,
+  ].filter((i) => i !== null);
 
   return (
     <div className="mainContainer">
@@ -42,7 +60,7 @@ const getId = () => {
             <p>Alcoholico: {cocktail?.strAlcoholic}</p>
             <p>Vaso: {cocktail?.strGlass}</p>
             <p>Instrucciones Ingles: {cocktail?.strInstructions}</p>
-            <p>Ingredientes: {cocktail?.strIngredient1}</p>
+            <p>Ingredientes: {Ingredientes.join(',')}</p>
 
             <button onClick={() => router.back()}>Volver</button>
           </div>
