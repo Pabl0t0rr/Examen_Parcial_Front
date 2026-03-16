@@ -38,14 +38,23 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    if (!palabraFinal) return; //Para evitar hacer una llamada a la API
     //Inicializar estados
     setLoading(true);
     setError(null);
+    setDrink([]);
+
+    //Para poner por defecto la margarita si se busca con algo vacio
+    if (!palabraFinal) {
+      getCocktailsByName('margarita')
+        .then((p) => setDrink(p.drinks))
+        .catch((err) => setError(err.message))
+        .finally(() => setLoading(false));
+      return;
+    }
 
     getCocktailsByName(palabraFinal)
       .then((d: any) => {
-        setDrink(d.drinks);
+        setDrink(d.drinks || []);
       })
       .catch((err: AxiosError) => {
         setError(err.message);
@@ -59,7 +68,6 @@ const Home = () => {
   const randomDrink = () => {
     getCocktailsRandom()
       .then((d) => {
-        setDrink(d.drinks);
         router.push('/drink/' + d.drinks[0].idDrink);
       })
       .catch((err: AxiosError) => {
@@ -74,16 +82,20 @@ const Home = () => {
     <div>
       <div className="mainContainer">
         <h1>Bebidas</h1>
-        <input
-          onChange={(p) => setPalabra(p.target.value)}
-          onKeyDown={(p) => {
-            if (p.key === 'Enter') {
-              setPalabraFinal(palabra);
-            }
-          }}
-        />
-        <button onClick={() => setPalabraFinal(palabra)}>Buscar Bebida</button>
-        <button onClick={randomDrink}>Dime algo bonito</button>
+        <div className="searchContainer">
+          <input
+            onChange={(p) => setPalabra(p.target.value)}
+            onKeyDown={(p) => {
+              if (p.key === 'Enter') {
+                setPalabraFinal(palabra);
+              }
+            }}
+          />
+          <button onClick={() => setPalabraFinal(palabra)}>
+            Buscar Bebida
+          </button>
+          <button onClick={randomDrink}>Dime algo bonito</button>
+        </div>
       </div>
 
       {loading && <p>Cargando...</p>}
@@ -92,7 +104,6 @@ const Home = () => {
       <div className="cocktailContainer">
         {!loading &&
           !error &&
-          drink.length > 0 &&
           drink.map((d) => <Coktail key={d.idDrink} drink={d}></Coktail>)}
       </div>
     </div>
